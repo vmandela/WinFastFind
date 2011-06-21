@@ -1,0 +1,152 @@
+*winfastfind.txt*	For Vim version 7.3.  Last change: 2011 Jun 06
+
+			       ---------------------
+			       Fast Find for Windows
+			       ---------------------
+
+Author:  Venkat Mandela <vNOeSPnkat.mAMandela@gmail.com>
+	  (remove NOSPAM from email first)
+
+Copyright: (c) 2011 by Venkat Mandela        *winfastfind-copyright*
+	   The VIM LICENSE applies to WinFastFind.vim, and WinFastFind.txt
+	   (see |copyright|) except use "WinFastFind" instead of "Vim".
+	   No warranty, express or implied.
+	   Use At-Your-Own-Risk!
+
+==============================================================================
+
+1. Contents				                   *WinFastFind* *WinFastFind-contents*
+
+	1. Contents...........................................: WinFastFind-contents
+	2. Overview...........................................: WinFastFind-overview
+	3. Installation ......................................: WinFastFind-install
+	4. Usage..............................................: WinFastFind-usage
+	5. Configuration......................................: WinFastFind-params
+
+==============================================================================
+
+2. Overview                                     *WinFastFind-overview*
+
+I work on Windows at work. I have frequently found the "find" command on Vim to
+lag when the "path" variable is set to recurse through a large directory. This
+is my attempt to solve this problem.
+
+I am using an external filename search tool called "Everything" along with a
+sed script to find for files by name from VIM. 
+
+==============================================================================
+
+3. Installation							WinFastFind-install
+
+To use this plugin, you need the below external tools. All of them are free.
+Except for Perl, all of them have installers in KB.
+
+1. Perl - I use strawberry perl but any other version of Perl should work as
+well. There is no dependency on any perl modules.
+
+http://strawberryperl.com/
+
+2. Sed - I use sed from GnuWin32 on my system.
+
+http://gnuwin32.sourceforge.net/packages/sed.htm
+
+3. Everything - This is a windows file name search tool available from 
+http://www.voidtools.com/Everything-1.2.1.371.exe
+
+4. Everything command line Interface - This is a command line to obtain search
+results from Everything database.  
+
+http://www.voidtools.com/es.exe
+
+After installing the above tools, ensure that Perl,sed and es.exe are present
+in the system path. This can be verified by running.
+
+1. Perl -v
+2. sed --help
+3. es --help
+
+Once the external tools are setup, install the plugin using the Vimball or the
+zip file. The plugin currently consists of three files.
+
+plugin\WinFastFind.vim
+plugin\handlesubsts.pl
+doc\WinFastFind.txt
+
+==============================================================================
+
+4. Usage 											*WinFastFind-usage*
+
+Set the VIM path variable to paths you need to be searched.
+
+e.g.
+
+:set path+=c:/cygwin/usr/include/**
+
+The plugin defines one function
+
+FastFindFile()
+
+You can call the function by typin
+
+:call FastFindFile("main.c")
+
+For convenience, the plugin defines a command Ff. The same command as above can be
+executed using
+
+:ff main.c
+
+Only parts of file name can also be given
+
+:ff ma n.c
+
+The plugin also defines a key combination 'ff' in the normal mode, which can be used similar to the key combination 'gf'.
+
+==============================================================================
+
+5. Configuration parameters 						*WinFastFind-params*
+
+g:winfastfind#ignorecase = 1
+
+Set to 1 to ignore case both in filename and in path. Default is to ignore case.
+
+g:winfastfind#matchpath = 1
+
+When this parameter is set, the search string is matched in the path as well as file name.
+This is a feature from Everything. Default is to match the path as it allows fuzzy searches.
+
+g:winfastfind#ignorefiles = "swp,o,obj,a,pp,orig"
+
+Add the extensions you want to ignore from the search. These are matched at the end of the filename only.
+
+g:winfastfind#matchwholeword= 0
+
+When this parameter is set, the full string is matched.
+
+g:winfastfind#sortbypath = 1
+
+When set, the search results are matched by path.
+
+==============================================================================
+
+6. How the plugin works 								*WinFastFind-execution*
+
+On startup, the plugin generates a name for the sed script based on the VIM
+instance name. Using the VIM instance name ensures that this script is unique
+for each open instance of VIM. By default,this script is placed in the plugin
+directory. The name of the script is the instance name. e.g. GVIM1.sed.
+
+When you a search, the plugin first checks if any configuration parameters have
+changed. If they have, a new sed script is generated. Then it proceeds to
+invoke Everything and filter the results using "sed". The results show up in a
+list from which you can select by clicking the file or entering the zero based
+file index in the list.
+
+
+==============================================================================
+
+7. TODO list											*WinFastFind-execution*
+
+1. Delete the generated sed script when exiting VIM
+2. Append index numbers when displaying files so that it is easy to select.
+3. Use Vim tab completion to allow user to do incremental searches.
+

@@ -1,0 +1,3 @@
+doc\WinFastFind.txt
+plugin\WinFastFind.vim
+plugin\handlesubsts.pl
